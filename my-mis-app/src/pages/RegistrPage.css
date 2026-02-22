@@ -1,0 +1,65 @@
+.reg-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.reg-form {
+    display: flex;
+    background: #b2a7d623;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px #32313187;
+    width: 600px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-input input {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-input select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1c5fb3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.reg-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #b7b1caff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+}
