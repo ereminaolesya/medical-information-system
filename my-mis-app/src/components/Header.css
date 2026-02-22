@@ -1,0 +1,28 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    height: 70px;
+    background-color: #264b77;
+    color: #fff;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    font-size: 18px;
+    text-align: right;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.loginBtn {
+    color: white;
+    font-weight: 500;
+}
