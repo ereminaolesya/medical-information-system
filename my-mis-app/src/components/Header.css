@@ -4,14 +4,14 @@
     align-items: center;
     padding: 0 30px;
     height: 70px;
-    background-color: #264b77;
+    background-color: #003871;
     color: #fff;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 50px;
     color: #fff;
     font-size: 18px;
     text-align: right;
