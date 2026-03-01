@@ -8,8 +8,8 @@ import { api } from "../api/axios";
 const regSchema = z.object({
     name: z.string(),
     password: z.string(),
-    email: z.string().email,
-    birthday: z.string().date(),
+    email: z.string().email(),
+    birthday: z.string(),
     gender: z.enum(['Male', 'Female']),
     phone: z
         .string()
@@ -31,7 +31,12 @@ export function RegistrPage() {
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
-            return await api.post("/doctor/register", data);
+            const newData = {
+                ...data,
+                birthday: new Date(data.birthday).toISOString()
+            };
+
+            return await api.post("/doctor/register", newData);
         },
         onSuccess: (data) => {
             const token = data.data.token;
@@ -41,6 +46,7 @@ export function RegistrPage() {
         },
         onError: (error: any) => {
             console.log("Ошибка регистрации", error.response?.data);
+            alert('Регистрация неуспешна!');
         },
     });
 
@@ -67,7 +73,7 @@ export function RegistrPage() {
                 <div className="form-input-row">
                     <div className="form-input">
                         <label>Пол</label>
-                        <select defaultValue="male" {...register("gender")}>
+                        <select defaultValue="Male" {...register("gender")}>
                             <option value="Male">Мужской</option>
                             <option value="Female">Женский</option>
                         </select>
@@ -84,7 +90,7 @@ export function RegistrPage() {
                 </div>
                 <div className="form-input">
                     <label>Специальность</label>
-                    <select defaultValue="doctor" {...register("speciality")}>
+                    <select {...register("speciality")}>
                         <option value="" disabled>Выберите специальность</option>
 
                         {isLoading && <option>Загрузка...</option>}
