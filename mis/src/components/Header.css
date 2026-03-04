@@ -27,3 +27,55 @@
     font-weight: 500;
     text-decoration: none;
 }
+
+.dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    max-width: 200px;
+}
+
+.dropdown svg {
+    flex-shrink: 0;
+}
+
+.dropdown {
+    display: flex;
+    gap: 8px;
+}
+
+.profName {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.dropdown-content {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border: 2px solid gray;
+    border-radius: 5px;
+    gap: 10px;
+    padding: 10px 10px;
+    position: absolute;
+    top: 100%;
+    margin-top: 10px;
+    width: 100%;
+}
+.profile {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+}
+
+.logoutBtn {
+    color: black;
+    font-weight: 500;
+    text-decoration: none;
+    background: white;
+    border: none;
+    text-align: left;
+    font-size: 16px;
+}

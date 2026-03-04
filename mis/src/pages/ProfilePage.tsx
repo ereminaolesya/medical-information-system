@@ -23,6 +23,7 @@ export function ProfilePage() {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<FormData>({
         resolver: zodResolver(profileSchema),
@@ -31,10 +32,8 @@ export function ProfilePage() {
     const { data: data, isLoading } = useQuery({
         queryKey: ['profile'],
         queryFn: async () => {
-            const res = await api.get("/doctor/profile", {
-                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-            });
-            return res.data;
+            const response = await api.get("/doctor/profile");
+            return response.data;
         }
     });
 
@@ -45,23 +44,35 @@ export function ProfilePage() {
                 birthday: new Date(data.birthday).toISOString()
             };
 
-            return await api.post("/doctor/register", newData);
+            return await api.put("/doctor/profile", newData);
         },
         onSuccess: (data) => {
-            const token = data.data.token;
-            console.log("Успешная регистрация:", data);
-            alert('Регистрация успешна!');
-            localStorage.setItem("token", token);
+            console.log("Профиль обновлен", data);
+            alert('Профиль обновлен!');
         },
         onError: (error: any) => {
-            console.log("Ошибка регистрации", error.response?.data);
-            alert('Регистрация неуспешна!');
+            console.log("Ошибка", error.response?.data);
+            alert('Ошибка');
         },
     });
+
+    useEffect(() => {
+        if (data) {
+            reset({
+                name: data.name,
+                email: data.email,
+                birthday: data.birthday.split("T")[0],
+                gender: data.gender,
+                phone: data.phone,
+            });
+        }
+    }, [data, reset]);
 
     const onSubmit = (data: FormData) => {
         mutation.mutate(data);
     };
+
+    if (isLoading) return <div>Загрузка...</div>;
 
     return (
         <div className="prof-page">
@@ -74,7 +85,7 @@ export function ProfilePage() {
                 <div className="form-input-row">
                     <div className="form-input">
                         <label>Пол</label>
-                        <select defaultValue="Male" {...register("gender")}>
+                        <select {...register("gender")}>
                             <option value="Male">Мужской</option>
                             <option value="Female">Женский</option>
                         </select>

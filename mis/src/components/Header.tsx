@@ -1,6 +1,29 @@
 import './Header.css';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {api} from "../api/axios.ts";
+import {useState} from "react";
 export default function Header() {
+
+    const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
+    const queryClient = useQueryClient();
+    const { data: data } = useQuery({
+        queryKey: ['profile'],
+        queryFn: async () => {
+            const response = await api.get("/doctor/profile");
+            return response.data;
+        },
+        enabled: !!token,
+    });
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        queryClient.removeQueries({queryKey: ['profile']});
+        navigate("/login");
+    };
+
     return (
         <header className="header">
             <div className="logo">
@@ -16,9 +39,29 @@ export default function Header() {
                 <span>Try not to <br/><strong>DIE</strong></span>
             </div>
             <div className="actions">
-                <Link to="/login" className="loginBtn">
+                {!data ? (
+                    <Link to="/login" className="loginBtn">
                     Вход
-                </Link>
+                    </Link>) : (
+                        data && (
+                        <div className="dropdown-menu">
+                            <div className="dropdown" onClick={() => setOpen(!open)}>
+                                <div className="profName">{data.name}</div> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M6 9 L12 15 L18 9"
+                                      stroke="white"
+                                      stroke-width="2"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                            </svg>
+                            </div>
+                            {open && (
+                            <div className="dropdown-content">
+                                <Link to="/profile" className="profile">Профиль</Link>
+                                <button onClick={logout} className="logoutBtn">Выход</button>
+                            </div>)}
+                        </div>
+                    )
+                )}
             </div>
         </header>
     )
