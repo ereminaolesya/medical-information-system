@@ -3,6 +3,7 @@ import {LoginPage} from "./pages/LoginPage.tsx";
 import {RegistrPage} from "./pages/RegistrPage.tsx";
 import {ProfilePage} from "./pages/ProfilePage.tsx";
 import { Routes, Route } from 'react-router-dom'
+import {PatientsPage} from "./pages/PatientsPage.tsx";
 function App() {
 
   return (
@@ -13,6 +14,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/registration" element={<RegistrPage />}/>
                 <Route path="/profile" element={<ProfilePage />}/>
+                <Route path="/patients" element={<PatientsPage />}/>
             </Routes>
         </main>
     </>

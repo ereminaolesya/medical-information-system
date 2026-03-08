@@ -1,4 +1,4 @@
-import './RegistrPage.css';
+import './css/RegistrPage.css';
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'

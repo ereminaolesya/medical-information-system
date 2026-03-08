@@ -1,0 +1,164 @@
+.patients {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 1200px;
+}
+
+.patients-header {
+    display: flex;
+    justify-content: space-between;
+
+}
+.patients-header button {
+    border: none;
+    background: #195998;
+    color: #fff;
+    padding: 10px 10px;
+    border-radius: 3px;
+}
+
+.searchButton {
+    border: none;
+    background: #195998;
+    color: #fff;
+    padding: 10px 60px;
+    border-radius: 3px;
+}
+
+.patients-filters-searchButton {
+    display: flex;
+    align-items: end;
+}
+
+.patients-filters {
+    display: flex;
+    background: #b2a7d623;
+    padding: 20px 30px;
+    border-radius: 8px;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.patients-filters-row {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.patients-filters-row1 {
+    display: grid;
+    /*gap: 150px;*/
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+
+.patients-filters-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.patients-filters-switch{
+    display: flex;
+    align-items: end;
+    gap: 5px;
+}
+
+.switch {
+    position: relative;
+    width: 50px;
+    height: 25px;
+}
+
+.switch input {
+    opacity: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 5px;
+    bottom: 5px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #195998;
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.patients-list {
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    gap: 10px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 1200px) {
+    .patients-list {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.patient {
+    display: flex;
+    background: #b2a7d623;
+    padding: 20px 30px;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.patientText {
+    color: #757575;
+}
+
+.pages {
+    display: flex;
+    gap: 5px;
+    align-self: center;
+}
+
+.buttonsPage {
+    padding: 12px 15px;
+    background: white;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 16px;
+}

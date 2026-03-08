@@ -79,3 +79,15 @@
     text-align: left;
     font-size: 16px;
 }
+
+.actionsLogin {
+    justify-content: space-between;
+    display: flex;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+}
+.actionsVar {
+    color: white;
+    text-decoration: none;
+}

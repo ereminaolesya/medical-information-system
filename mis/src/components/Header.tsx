@@ -37,6 +37,14 @@ export default function Header() {
                     <rect x="58" y="80" width="6" height="15" rx="3" fill="white"/>
                 </svg>
                 <span>Try not to <br/><strong>DIE</strong></span>
+                {data && (
+                    <div className="actionsLogin">
+                        <Link to="/patients" className="actionsVar">Пациенты</Link>
+                        <Link to="/consultations" className="actionsVar">Консультации</Link>
+                        <Link to="/reports" className="actionsVar">Отчеты и статистика</Link>
+                    </div>
+                )
+                }
             </div>
             <div className="actions">
                 {!data ? (

@@ -1,4 +1,4 @@
-import './ProfilePage.css';
+import './css/ProfilePage.css';
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -29,7 +29,7 @@ export function ProfilePage() {
         resolver: zodResolver(profileSchema),
     });
 
-    const { data: data, isLoading } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['profile'],
         queryFn: async () => {
             const response = await api.get("/doctor/profile");

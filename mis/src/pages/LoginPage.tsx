@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import './css/LoginPage.css';
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -30,7 +30,7 @@ export function LoginPage() {
             const token = data.data.token;
             alert('Логин успешна!');
             localStorage.setItem("token", token);
-            navigate('/')
+            navigate('/profile')
         },
         onError: (error: any) => {
             console.error(error);
