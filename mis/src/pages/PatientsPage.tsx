@@ -5,13 +5,27 @@ import {api} from "../api/axios.ts";
 
 export function PatientsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
+
+    const name = searchParams.get('name') || '';
+    const conclusions = searchParams.getAll('conclusions');
+    const sorting = searchParams.get('sorting') || '';
+    const scheduledVisits = searchParams.get('scheduledVisits') === 'true';
+    const onlyMine = searchParams.get('onlyMine') === 'true';
     const page = Number(searchParams.get('page')) || 1;
     const size = Number(searchParams.get('size')) || 5;
 
     const { data } = useQuery({
-        queryKey: ['patients', page, size],
+        queryKey: ['patients', name, conclusions, scheduledVisits, onlyMine, sorting, page, size],
         queryFn: async () => {
-            const response = await api.get(`/patient?page=${page}&size=${size}`);
+            const parametrs = new URLSearchParams();
+            parametrs.set('name', name);
+            conclusions.forEach(conclusions => parametrs.append('conclusions', conclusions));
+            parametrs.set('sorting', sorting);
+            if (scheduledVisits) {parametrs.set('scheduledVisits', 'true')}
+            if (onlyMine) {parametrs.set('onlyMine', 'true')}
+            parametrs.set('page', String(page));
+            parametrs.set('size', String(size));
+            const response = await api.get(`/patient?${parametrs.toString()}`);
             return response.data;
         }
     });
@@ -47,7 +61,6 @@ export function PatientsPage() {
             <div className="patients-header">
                 <h2>Пациенты</h2>
                 <div>
-
                     <button>Регистрация нового пациента</button>
                 </div>
             </div>
@@ -56,37 +69,81 @@ export function PatientsPage() {
                 <div className="patients-filters-row1">
                     <div className="patients-filters-cell">
                         <label>Имя</label>
-                        <input className="" placeholder="Иванов Иван Иванович"></input>
+                        <input className="" placeholder="Иванов Иван Иванович" value={name} onChange={(e) =>
+                        {const parametrs = new URLSearchParams(searchParams);
+                            parametrs.set('name', e.target.value);
+                            setSearchParams(parametrs);
+                        }}></input>
                     </div>
                     <div className="patients-filters-cell">
                         <label>Имеющиеся заключения</label>
-                        <select className=""></select>
+                        <select className="" onChange={(e) =>
+                        {const parametrs = new URLSearchParams(searchParams);
+                            parametrs.delete('conclusions');
+                            parametrs.append('conclusions', e.target.value);
+                            setSearchParams(parametrs);
+                        }}>
+                            <option value="">Выберите заключение</option>
+                            <option value="Disease">Болезнь</option>
+                            <option value="Recovery">Выздоровление</option>
+                            <option value="Death">Смерть</option>
+                        </select>
                     </div>
                 </div>
                 <div className="patients-filters-row">
                     <div className="patients-filters-switch">
                         <label className="switch">
-                            <input type="checkbox"></input>
+                            <input type="checkbox" onChange={(e) =>
+                            {const parametrs = new URLSearchParams(searchParams);
+                                if (e.target.checked) {parametrs.set('scheduledVisits', 'true');}
+                                else {parametrs.set('scheduledVisits', 'false');}
+                                setSearchParams(parametrs);
+                            }}></input>
                             <span className="slider"></span>
                         </label>
                         <span>Есть запланированные визиты</span>
                     </div>
                     <div className="patients-filters-switch">
                         <label className="switch">
-                            <input type="checkbox"></input>
+                            <input type="checkbox" onChange={(e) =>
+                            {const parametrs = new URLSearchParams(searchParams);
+                                if (e.target.checked) {parametrs.set('onlyMine', 'true');}
+                                else {parametrs.set('onlyMine', 'false');}
+                                setSearchParams(parametrs);
+                            }}></input>
                             <span className="slider"></span>
                         </label>
                         <span>Мои пациенты</span>
                     </div>
                     <div className="patients-filters-cell">
                         <label>Сортировка пациентов</label>
-                        <select></select>
+                        <select onChange={(e) => {
+                            const parametrs = new URLSearchParams(searchParams);
+                            parametrs.set('sorting', e.target.value);
+                            setSearchParams(parametrs);
+                        }}>
+                            <option value="NameAsc">По имени (А-Я)</option>
+                            <option value="NameDesc">По имени (Я-А)</option>
+                            <option value="CreateAsc">Сначала старые</option>
+                            <option value="CreateDesc">Сначала новые</option>
+                            <option value="InspectionAsc">Сначала старые осмотры</option>
+                            <option value="InspectionDesc">Сначала новые осмотры</option>
+                        </select>
                     </div>
                 </div>
                 <div className="patients-filters-row">
                     <div className="patients-filters-cell">
                         <label>Число пациентов на странице</label>
-                        <select></select>
+                        <select onChange={(e) => {
+                            const parametrs = new URLSearchParams(searchParams);
+                            parametrs.set('size', e.target.value);
+                            setSearchParams(parametrs);
+                        }}>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
                     </div>
                     <div className="patients-filters-searchButton">
                         <button className="searchButton">Поиск</button>
