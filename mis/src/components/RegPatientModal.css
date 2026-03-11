@@ -1,19 +1,29 @@
-.reg-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #355A8280;
+    z-index: 1000;
+    overflow: hidden;
 }
 
-.reg-form {
-    display: flex;
-    background: #b2a7d623;
-    padding: 20px 30px;
+.modal {
+    position: absolute;
+    min-width: 600px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+}
+
+.modal-inner-container {
+    position: relative;
     border-radius: 8px;
+    padding: 20px 30px;
+    background: #FAFDFF;
     box-shadow: 0 3px 10px #32313187;
-    width: 600px;
-    flex-direction: column;
     gap: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-input {
@@ -42,7 +52,7 @@
     font-size: 16px;
 }
 
-.login-btn {
+.reg-pat-btn {
     width: 100%;
     padding: 12px;
     background-color: #1c5fb3;
