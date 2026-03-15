@@ -1,5 +1,5 @@
 import './css/PatientsPage.css';
-import { useSearchParams } from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {api} from "../api/axios.ts";
 import {useEffect, useState} from "react";
@@ -172,12 +172,12 @@ export function PatientsPage() {
             </div>
             <div className="patients-list">
                 {data?.patients.map((item: Patient) => (
-                <div className="patient" key={item.id}>
+                <Link to={`/patient/${item.id}`} className="patient" key={item.id}>
                     <strong >{item.name}</strong>
                     <span><span className="patientText">Email — </span>{item.email}</span>
                     <span><span className="patientText">Пол — </span>{item.gender === "Male" ? "Мужчина" : "Женщина"}</span>
                     <span><span className="patientText">Дата рождения — </span>{new Date(item.birthday).toLocaleDateString()}</span>
-                </div>
+                </Link>
                 ))}
             </div>
             <div className="pages">
@@ -185,7 +185,7 @@ export function PatientsPage() {
                 {pages.map((p) => (<button className="buttonsPage" key={p} onClick={() => changePage(p)}>{p}</button>))}
                 <button className="buttonsPage" onClick={() => changePage(page + 1)}>&gt;</button>
             </div>
-            {isModalOpen && <RegPatientModal />}
+            {isModalOpen && (<RegPatientModal onClose={() => setIsModalOpen(false)} />)}
         </div>
     )
 }

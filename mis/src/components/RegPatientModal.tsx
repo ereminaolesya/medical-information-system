@@ -12,7 +12,11 @@ const regPatientSchema = z.object({
 });
 type FormData = z.infer<typeof regPatientSchema>;
 
-export function RegPatientModal() {
+type Props = {
+    onClose: () => void
+}
+
+export function RegPatientModal({ onClose }: Props) {
     const {
         register,
         handleSubmit,
@@ -45,7 +49,7 @@ export function RegPatientModal() {
     };
 
     return (
-        <div className="modal-overlay">
+        <div className="modal-overlay" onClick={onClose}>
             <section className="modal">
                 <form className="modal-inner-container" onSubmit={handleSubmit(onSubmit)}>
                     <h2>Регистрация пациента</h2>
@@ -67,7 +71,7 @@ export function RegPatientModal() {
                             <input type="date" {...register("birthday")}/>
                         </div>
                     </div>
-                    <button className="reg-pat-btn" type="submit">Зарегистрировать</button>
+                    <button className="reg-pat-btn" type="submit" onClick={onClose}>Зарегистрировать</button>
                 </form>
             </section>
         </div>

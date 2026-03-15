@@ -1,4 +1,4 @@
-.patients {
+.patient-card {
     margin: 20px auto;
     display: flex;
     flex-direction: column;
@@ -6,17 +6,28 @@
     max-width: 1200px;
 }
 
-.patients-header {
+.patient-header {
     display: flex;
     justify-content: space-between;
-
 }
-.patients-header button {
+
+.patient-header button {
     border: none;
     background: #195998;
     color: #fff;
     padding: 10px 10px;
     border-radius: 3px;
+}
+
+.patient-info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.patient-name {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }
 
 .searchButton {
@@ -32,7 +43,7 @@
     align-items: end;
 }
 
-.patients-filters {
+.patient-filters {
     display: flex;
     background: #b2a7d623;
     padding: 20px 30px;
@@ -41,25 +52,23 @@
     gap: 15px;
 }
 
-.patients-filters-row {
+.patient-filters-row {
     display: flex;
     justify-content: space-between;
-
 }
 
-.patients-filters-row1 {
+.patient-filters-row1 {
     display: grid;
-    /*gap: 150px;*/
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 0.5fr 0.5fr;
     gap: 20px;
 }
 
-
-.patients-filters-cell {
+.patient-filters-cell {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
+
 
 input {
     padding: 10px;
@@ -75,54 +84,48 @@ select {
     font-size: 16px;
 }
 
-.patients-filters-switch{
+.patient-filters-radio {
     display: flex;
-    align-items: end;
+    align-items: center;
     gap: 5px;
 }
 
-.switch {
+.radio {
     position: relative;
-    width: 50px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
 }
 
-.switch input {
+.patient-filters-radio input {
     opacity: 0;
 }
 
-.slider {
+.radio-made {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #ccc;
-    border-radius: 30px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 5px;
-    bottom: 5px;
-    background-color: white;
+    border: 2px solid #888;
     border-radius: 50%;
 }
 
-input:checked + .slider {
-    background-color: #195998;
+.radio input:checked + .radio-made::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #195998;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.radio input:checked + .radio-made {
+    border: 2px solid #195998;
 }
 
-input:checked + .slider:before {
-    transform: translateX(24px);
-}
-
-.patients-list {
-    /*display: flex;*/
-    /*flex-direction: column;*/
+.patient-list {
     gap: 10px;
     width: 100%;
     display: grid;
@@ -142,13 +145,10 @@ input:checked + .slider:before {
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    text-decoration: none;
-    color: black;
 }
 
 .patientText {
     color: #757575;
-    text-decoration: none;
 }
 
 .pages {
@@ -164,4 +164,14 @@ input:checked + .slider:before {
     border-radius: 3px;
     text-align: center;
     font-size: 16px;
+}
+
+.patient-inspection-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.patient-inspname, .patient-buttons {
+    display: flex;
+    gap: 15px;
 }

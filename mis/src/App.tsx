@@ -4,6 +4,7 @@ import {RegistrPage} from "./pages/RegistrPage.tsx";
 import {ProfilePage} from "./pages/ProfilePage.tsx";
 import { Routes, Route } from 'react-router-dom'
 import {PatientsPage} from "./pages/PatientsPage.tsx";
+import {PatientCardPage} from "./pages/PatientCardPage.tsx";
 function App() {
 
   return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/registration" element={<RegistrPage />}/>
                 <Route path="/profile" element={<ProfilePage />}/>
                 <Route path="/patients" element={<PatientsPage />}/>
+                <Route path="/patient/:id" element={<PatientCardPage />} />
             </Routes>
         </main>
     </>
