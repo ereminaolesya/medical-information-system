@@ -2,44 +2,60 @@ import './css/PatientsPage.css';
 import {Link, useSearchParams} from "react-router-dom";
 import {useQuery} from "@tanstack/react-query";
 import {api} from "../api/axios.ts";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {RegPatientModal} from "../components/RegPatientModal";
+import z from 'zod';
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+
+const patientsSchema = z.object({
+    name: z.string().optional(),
+    conclusions: (z.enum(['Disease', 'Recovery', 'Death'])).optional().or(z.literal('')),
+    sorting: z.enum(['NameAsc', 'NameDesc', 'CreateAsc', 'CreateDesc', 'InspectionAsc', 'InspectionDesc']).optional(),
+    scheduledVisits: z.boolean().optional(),
+    onlyMine: z.boolean().optional(),
+    page: z.string(),
+    size: z.string()
+})
+type FormData = z.infer<typeof patientsSchema>;
 
 export function PatientsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const name = searchParams.get('name') || '';
-    const conclusions = searchParams.getAll('conclusions');
-    const sorting = searchParams.get('sorting') || '';
-    const scheduledVisits = searchParams.get('scheduledVisits') === 'true';
-    const onlyMine = searchParams.get('onlyMine') === 'true';
-    const page = Number(searchParams.get('page')) || 1;
-    const size = Number(searchParams.get('size')) || 5;
-
-    const [formFilters, setFormFilters] = useState({
-        name,
-        conclusions: conclusions[0] || '',
-        scheduledVisits,
-        onlyMine,
-        sorting,
-        size
+    const {
+        register,
+        handleSubmit
+    } = useForm<FormData>({
+        resolver: zodResolver(patientsSchema),
+        defaultValues: {
+            scheduledVisits: false,
+            onlyMine: false,
+            page: '1',
+            size: '5'
+        }
     });
 
     const { data } = useQuery({
-        queryKey: ['patients', name, conclusions, scheduledVisits, onlyMine, sorting, page, size],
+        queryKey: ['patients', searchParams.toString()],
         queryFn: async () => {
-            const parametrs = new URLSearchParams();
-            parametrs.set('name', name);
-            conclusions.forEach(conclusions => parametrs.append('conclusions', conclusions));
-            parametrs.set('sorting', sorting);
-            if (scheduledVisits) {parametrs.set('scheduledVisits', 'true')}
-            if (onlyMine) {parametrs.set('onlyMine', 'true')}
-            parametrs.set('page', String(page));
-            parametrs.set('size', String(size));
-            const response = await api.get(`/patient?${parametrs.toString()}`);
+            const response = await api.get(`/patient?${searchParams.toString()}`);
             return response.data;
         }
     });
+
+    const onSubmit = (data: FormData) => {
+        const parametrs = new URLSearchParams();
+        if (data.name) {parametrs.set('name', data.name);}
+        if (data.conclusions) {parametrs.set('conclusions', data.conclusions);}
+        if (data.scheduledVisits) {parametrs.set('scheduledVisits', 'true');}
+        if (data.onlyMine) {parametrs.set('onlyMine', 'true');}
+        if (data.sorting) {parametrs.set('sorting', data.sorting);}
+        if (data.size) {parametrs.set('size', String(data.size));}
+        setSearchParams(parametrs);
+    }
+
+    const page = Number(searchParams.get('page')) || 1;
+    const size = Number(searchParams.get('size')) || 5;
 
     const changePage = (newPage: number) => {
         if (newPage > totalPages || newPage < 1) {return;}
@@ -69,17 +85,6 @@ export function PatientsPage() {
         birthday: string
     }
 
-    useEffect(() => {
-        setFormFilters({
-            name,
-            conclusions: conclusions[0] || '',
-            scheduledVisits,
-            onlyMine,
-            sorting,
-            size
-        });
-    }, [searchParams]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     return (
@@ -95,15 +100,11 @@ export function PatientsPage() {
                 <div className="patients-filters-row1">
                     <div className="patients-filters-cell">
                         <label>Имя</label>
-                        <input className="" placeholder="Иванов Иван Иванович" value={formFilters.name} onChange={(e) =>
-                        {setFormFilters({...formFilters, name: e.target.value})
-                        }}></input>
+                        <input className="" placeholder="Иванов Иван Иванович" {...register("name")}></input>
                     </div>
                     <div className="patients-filters-cell">
                         <label>Имеющиеся заключения</label>
-                        <select className="" value={formFilters.conclusions} onChange={(e) =>
-                        {setFormFilters({...formFilters, conclusions: e.target.value})
-                        }}>
+                        <select className=""{...register("conclusions")}>
                             <option value="">Выберите заключение</option>
                             <option value="Disease">Болезнь</option>
                             <option value="Recovery">Выздоровление</option>
@@ -114,27 +115,21 @@ export function PatientsPage() {
                 <div className="patients-filters-row">
                     <div className="patients-filters-switch">
                         <label className="switch">
-                            <input type="checkbox" checked={formFilters.scheduledVisits} onChange={(e) =>
-                            {setFormFilters({...formFilters, scheduledVisits: e.target.checked})
-                            }}></input>
+                            <input type="checkbox" {...register("scheduledVisits")}></input>
                             <span className="slider"></span>
                         </label>
                         <span>Есть запланированные визиты</span>
                     </div>
                     <div className="patients-filters-switch">
                         <label className="switch">
-                            <input type="checkbox" checked={formFilters.onlyMine} onChange={(e) =>
-                            {setFormFilters({...formFilters, onlyMine: e.target.checked})
-                            }}></input>
+                            <input type="checkbox" {...register("onlyMine")}></input>
                             <span className="slider"></span>
                         </label>
                         <span>Мои пациенты</span>
                     </div>
                     <div className="patients-filters-cell">
                         <label>Сортировка пациентов</label>
-                        <select value={formFilters.sorting} onChange={(e) => {
-                            setFormFilters({...formFilters, sorting: e.target.value})
-                        }}>
+                        <select {...register("sorting")}>
                             <option value="NameAsc">По имени (А-Я)</option>
                             <option value="NameDesc">По имени (Я-А)</option>
                             <option value="CreateAsc">Сначала старые</option>
@@ -147,9 +142,7 @@ export function PatientsPage() {
                 <div className="patients-filters-row">
                     <div className="patients-filters-cell">
                         <label>Число пациентов на странице</label>
-                        <select value={formFilters.size} onChange={(e) => {
-                            setFormFilters({...formFilters, size: Number(e.target.value)});
-                        }}>
+                        <select {...register("size")}>
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
@@ -157,16 +150,7 @@ export function PatientsPage() {
                         </select>
                     </div>
                     <div className="patients-filters-searchButton">
-                        <button className="searchButton" onClick={() => {
-                            const parametrs = new URLSearchParams();
-                            if (formFilters.name) {parametrs.set('name', formFilters.name);}
-                            if (formFilters.conclusions) {parametrs.set('conclusions', formFilters.conclusions);}
-                            if (formFilters.scheduledVisits) {parametrs.set('scheduledVisits', 'true');}
-                            if (formFilters.onlyMine) {parametrs.set('onlyMine', 'true');}
-                            if (formFilters.sorting) {parametrs.set('sorting', formFilters.sorting);}
-                            if (formFilters.size) {parametrs.set('size', String(formFilters.size));}
-                            setSearchParams(parametrs);
-                        }}>Поиск</button>
+                        <button className="searchButton" onClick={handleSubmit(onSubmit)}>Поиск</button>
                     </div>
                 </div>
             </div>

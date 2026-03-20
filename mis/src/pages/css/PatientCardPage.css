@@ -82,12 +82,15 @@ select {
     border: 1px solid #ced4da;
     border-radius: 4px;
     font-size: 16px;
+    max-width: 30vw;
 }
 
 .patient-filters-radio {
     display: flex;
     align-items: center;
     gap: 5px;
+    padding-top: 20px;
+    padding-left: 20px;
 }
 
 .radio {
@@ -174,4 +177,24 @@ select {
 .patient-inspname, .patient-buttons {
     display: flex;
     gap: 15px;
+}
+
+.dataInspection {
+    background: #6F808AFF;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 3px;
+    margin: 0;
+    align-self: center;
+    font-weight: bold;
+}
+
+.buttonInpection {
+    background: none;
+    border: none;
+    color: #3b7ccc;
+    font-weight: bold;
+    align-items: center;
+    display: flex;
+    gap: 7px;
 }
