@@ -136,8 +136,11 @@ select {
 }
 
 @media (min-width: 1200px) {
-    .patients-list {
+    .patient-list {
         grid-template-columns: 1fr 1fr;
+    }
+    .patient-card {
+        max-width: 1400px;
     }
 }
 
@@ -148,6 +151,10 @@ select {
     flex-direction: column;
     gap: 15px;
     width: 100%;
+}
+
+.patient.death {
+    background: #ffe2be;
 }
 
 .patientText {
@@ -197,4 +204,14 @@ select {
     align-items: center;
     display: flex;
     gap: 7px;
+}
+
+.chainButton {
+    border: none;
+    border-radius: 3px;
+    background: #3b7ccc;
+    display: flex;
+    padding: 5px;
+    margin-right: -7px;
+    align-items: center;
 }
