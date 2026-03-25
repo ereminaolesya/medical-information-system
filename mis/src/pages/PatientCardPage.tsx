@@ -16,7 +16,7 @@ const inspSchema = z.object({
 })
 type FormData = z.infer<typeof inspSchema>;
 export function PatientCardPage() {
-    const {id} = useParams();
+    const { id } = useParams();
     const [searchParams, setSearchParams] = useSearchParams();
 
     const {
@@ -31,21 +31,21 @@ export function PatientCardPage() {
         }
     });
 
-    const {data} = useQuery({
+    const { data } = useQuery({
         queryKey: ['inspections', id, searchParams.toString()],
         queryFn: async () => {
             const response = await api.get(`/patient/${id}/inspections?${searchParams.toString()}`);
             return response.data;
         }
     });
-    const {data: patientData} = useQuery({
+    const { data: patientData } = useQuery({
         queryKey: ['patient', id],
         queryFn: async () => {
             const patresponse = await api.get(`/patient/${id}`);
             return patresponse.data;
         }
     });
-    const {data: icdData, isLoading} = useQuery({
+    const { data: icdData, isLoading } = useQuery({
         queryKey: ['icdRoots'],
         queryFn: async () => {
             const res = await api.get('/dictionary/icd10/roots');
@@ -55,15 +55,9 @@ export function PatientCardPage() {
 
     const onSubmit = (data: FormData) => {
         const parametrs = new URLSearchParams();
-        if (data.grouped) {
-            parametrs.set('grouped', 'true');
-        }
-        if (data.icdRoots) {
-            parametrs.append('icdRoots', data.icdRoots)
-        }
-        if (data.size) {
-            parametrs.set('size', String(data.size));
-        }
+        if (data.grouped) {parametrs.set('grouped', 'true');}
+        if (data.icdRoots) {parametrs.append('icdRoots', data.icdRoots)}
+        if (data.size) {parametrs.set('size', String(data.size));}
         setSearchParams(parametrs);
     }
 
@@ -71,9 +65,7 @@ export function PatientCardPage() {
     const size = Number(searchParams.get('size')) || 5;
 
     const changePage = (newPage: number) => {
-        if (newPage > totalPages || newPage < 1) {
-            return;
-        }
+        if (newPage > totalPages || newPage < 1) {return;}
         const parametrs = new URLSearchParams(searchParams);
         parametrs.set('page', String(newPage));
         parametrs.set('size', String(size));
@@ -91,17 +83,6 @@ export function PatientCardPage() {
         pages.push(i);
     }
 
-
-    //chains
-    const [openedChains, setOpenedChains] = useState<Record<string, boolean>>({});
-
-    const toggleChain = (id: string) => {
-        const newState = {...openedChains};
-        newState[id] = !newState[id];
-        setOpenedChains(newState);
-    };
-
-
     return (
         <div className="patient-card">
             <div className="patient-header">
@@ -113,17 +94,16 @@ export function PatientCardPage() {
             <div className="patient-info">
                 <div className="patient-name">
                     <h3>{patientData?.name}</h3>
-                    <span>{patientData?.gender === "Male" ?
-                        <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="10" cy="14" r="6" stroke="blue" stroke-width="2" fill="none"/>
-                            <line x1="15" y1="9" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                            <line x1="17" y1="2" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                            <line x1="22" y1="2" x2="22" y2="7" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                        </svg> : <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="9" r="6" stroke="blue" stroke-width="2" fill="none"/>
-                            <line x1="12" y1="15" x2="12" y2="23" stroke="blue" stroke-width="2"/>
-                            <line x1="8" y1="19" x2="16" y2="19" stroke="blue" stroke-width="2"/>
-                        </svg>}</span>
+                    <span>{patientData?.gender === "Male" ? <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="10" cy="14" r="6" stroke="blue" stroke-width="2" fill="none" />
+                        <line x1="15" y1="9" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="17" y1="2" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
+                        <line x1="22" y1="2" x2="22" y2="7" stroke="blue" stroke-width="2" stroke-linecap="round"/>
+                    </svg> : <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="9" r="6" stroke="blue" stroke-width="2" fill="none" />
+                        <line x1="12" y1="15" x2="12" y2="23" stroke="blue" stroke-width="2" />
+                        <line x1="8" y1="19" x2="16" y2="19" stroke="blue" stroke-width="2" />
+                    </svg>}</span>
                 </div>
                 <span>Дата рождения: {new Date(patientData?.birthday).toLocaleDateString()}</span>
             </div>
@@ -173,18 +153,28 @@ export function PatientCardPage() {
                 </div>
             </div>
             <div className="patient-list">
-                {data?.inspections.map((item: any) => (
-                    <>
-                    <InspectionCard item={item} openedChains={openedChains} toggleChain={toggleChain} searchParams={searchParams} />
-                    {openedChains[item.id] && (
-                        <ChainList
-                            id={item.id}
-                            openedChains={openedChains}
-                            toggleChain={toggleChain}
-                            searchParams={searchParams}
-                        />
-                    )}
-                    </>
+                {data?.inspections.map((item: any) =>
+                    searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]}/>) : (
+                            <div className="patient" key={item.id}>
+                                <div className="patient-inspection-header">
+                                    <div className="patient-inspname">
+                                        <div className="dataDiv"><span className="dataInspection">{new Date(item.date).toLocaleDateString()}</span></div>
+                                        <strong>Амбулаторный осмотр</strong>
+                                    </div>
+                                    <div className="patient-buttons">
+                                        <button className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>Добавить осмотр</button>
+                                        <button className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>Детали осмотра</button>
+                                    </div>
+                                </div>
+                                <span>Заключение: <span className="">{item.conclusion}</span></span>
+                                <span>Основной диагноз: <strong>{item.diagnosis.name} ({item.diagnosis.code})</strong></span>
+                                <span className="patientText">Медицинский работник: {item.doctor}</span>
+                            </div>
                 ))}
             </div>
             <div className="pages">
@@ -193,85 +183,61 @@ export function PatientCardPage() {
                 <button className="buttonsPage" onClick={() => changePage(page + 1)}>&gt;</button>
             </div>
         </div>
+    )
+}
 
-    )
-}
-function InspectionCard({item, openedChains, toggleChain, searchParams, isNested} : {item: any, openedChains: any, toggleChain: any, searchParams: any, isNested: boolean}) {
-    return (
-        <div className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
-            {isNested && (<div className="corner"></div>)}
-            <div className="patient-inspection-header">
-                <div className="patient-inspname">
-                    {!isNested && searchParams.get('grouped') === 'true' && item.hasChain && (
-                        <button className="chainButton" onClick={() => toggleChain(item.id)}>
-                            {openedChains[item.id] ?
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 12H19" stroke="white" stroke-width="3"
-                                          stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                                       xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
-                                          stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            }
-                        </button>
-                    )}
-                    <div className="dataDiv"><span
-                        className="dataInspection">{new Date(item.date).toLocaleDateString()}</span></div>
-                    <strong>Амбулаторный осмотр</strong>
-                </div>
-                {!isNested && (
-                <div className="patient-buttons">
-                    <button className="buttonInpection">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13"
-                                stroke="#3B82F6" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"/>
-                            <path
-                                d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
-                                stroke="#3B82F6" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"/>
-                        </svg>
-                        Добавить осмотр
-                    </button>
-                    <button className="buttonInpection">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-                                stroke="#3B82F6" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"/>
-                        </svg>
-                        Детали осмотра
-                    </button>
-                </div>)}
-            </div>
-            <span>Заключение: <span
-                className="">{item.conclusion === "Death" ? "смерть" : item.conclusion === "Recovery" ? "выздоровление" : "болезнь"}</span></span>
-            <span>Основной диагноз: <strong>{item.diagnosis.name} ({item.diagnosis.code})</strong></span>
-            <span className="patientText">Медицинский работник: {item.doctor}</span>
-        </div>
-    )
-}
-function ChainList({ id, openedChains, toggleChain, searchParams}: { id: string, openedChains: any, toggleChain: any, searchParams: any }) {
+function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, level: number, chainFull: any[] }) {
+    const [isOpen, setIsOpen] = useState(false);
     const { data } = useQuery({
-        queryKey: ['chain', id],
+        queryKey: ['chain', inspection.id],
         queryFn: async () => {
-            const res = await api.get(`/inspection/${id}/chain`);
+            const res = await api.get(`/inspection/${inspection.id}/chain`);
             return res.data;
-        }
+        },
+        enabled: isOpen && level === 0
     });
+    const currentChain = level === 0 ? data : chainFull;
+    const nextInChain = currentChain?.find((item: any) => item.previousId === inspection.id);
     return (
-        <div>
-            {data?.map((chainItem: any) => (
-                <div key={chainItem.id} className="inspectionChild">
-                    <InspectionCard item={chainItem} openedChains={openedChains} toggleChain={toggleChain} searchParams={searchParams} isNested={true} />
+        <div className="inspection-row-container" style={{ '--level': level } as React.CSSProperties}>
+            {level > 0 && <div className="corner"></div>}
+            <div className="patient" key={inspection.id}>
+                <div className="patient-inspection-header">
+                    <div className="patient-inspname">
+                        {inspection.hasNested && (
+                            <button className="chainButton" onClick={() => setIsOpen(!isOpen)}>
+                                {isOpen ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                               xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5 12H19" stroke="white" stroke-width="3"
+                                              stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                           xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
+                                              stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>}
+                            </button>
+                        )}
+                        <div className="dataDiv"><span className="dataInspection">{new Date(inspection.date).toLocaleDateString()}</span></div>
+                        <strong>Амбулаторный осмотр</strong>
+                    </div>
+                    <div className="patient-buttons">
+                        {!inspection.hasNested &&<button className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>Добавить осмотр</button>}
+                        <button className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>Детали осмотра</button>
+                    </div>
                 </div>
-            ))}
+                <span>Заключение: <span className="">{inspection.conclusion}</span></span>
+                <span>Основной диагноз: <strong>{inspection.diagnosis.name} ({inspection.diagnosis.code})</strong></span>
+                <span className="patientText">Медицинский работник: {inspection.doctor}</span>
+            </div>
+            {isOpen && nextInChain && (
+                <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} />
+            )}
         </div>
     );
 }
