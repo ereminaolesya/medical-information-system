@@ -49,3 +49,211 @@
     font-size: 16px;
     margin-top: 10px;
 }
+
+.patient-info {
+    background: #b2a7d623;
+    display: flex;
+    padding: 20px 30px;
+    border-radius: 8px;
+    flex-direction: column;
+    gap: 15px;
+}
+.patient-info-header {
+    justify-content: space-between;
+    display: flex;
+}
+.inspDate {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.inspDate input {
+    max-width: 30%;
+}
+.insp-info {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.insp-switch{
+    display: flex;
+    align-items: end;
+    gap: 5px;
+}
+
+.iSwitch {
+    position: relative;
+    width: 50px;
+    height: 25px;
+}
+
+.iSwitch input {
+    opacity: 0;
+}
+
+.iSlider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 30px;
+}
+
+.iSlider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 5px;
+    bottom: 5px;
+    background-color: white;
+    border-radius: 50%;
+}
+
+input:checked + .iSlider {
+    background-color: #195998;
+}
+
+input:checked + .iSlider:before {
+    transform: translateX(24px);
+}
+
+.insp-filter {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+}
+.insp-filter select {
+    flex-grow: 1;
+    max-width: none;
+}
+.insp-filter span{
+    padding-bottom: 5px;
+}
+.insp-comment {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.inspInput {
+    min-height: 70px;
+}
+.patient-info button {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    background: #1c5fb3;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 2px;
+}
+
+h3 {
+    color: #003871;
+}
+.insp-diseases {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.insp-diseases select {
+    flex-grow: 1;
+    max-width: none;
+}
+.radious {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.insp-filters-radio {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-top: 20px;
+}
+
+.iRadio {
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.insp-filters-radio input {
+    opacity: 0;
+}
+
+.radio-made-insp {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 2px solid #888;
+    border-radius: 50%;
+}
+
+.iRadio input:checked + .radio-made-insp::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #195998;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.iRadio input:checked + .radio-made-insp {
+    border: 2px solid #195998;
+}
+
+.conclusion {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+.conclusion-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.conclusion input, .conclusion select {
+    width: 30vw;
+    height: 4vh;
+}
+
+.saveBtn {
+    padding: 12px 20px;
+    background-color: #1c5fb3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.cancelBtn {
+    padding: 12px 20px;
+    background-color: #b7b1caff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.insp-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}

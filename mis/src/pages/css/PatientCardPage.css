@@ -11,12 +11,13 @@
     justify-content: space-between;
 }
 
-.patient-header button {
+.inspButton {
     border: none;
     background: #195998;
     color: #fff;
     padding: 10px 10px;
     border-radius: 3px;
+    text-decoration: none;
 }
 
 .patient-info {
@@ -204,6 +205,8 @@ select {
     align-items: center;
     display: flex;
     gap: 7px;
+    text-decoration: none;
+    font-size: 13px;
 }
 
 .chainButton {
@@ -221,7 +224,6 @@ select {
     flex-direction: column;
     position: relative;
     width: 100%;
-    /*margin-left: calc(var(--level) * 30px);*/
     gap: 15px;
 }
 .inspection-row-container .patient {

@@ -50,7 +50,7 @@ export function RegPatientModal({ onClose }: Props) {
 
     return (
         <div className="modal-overlay" onClick={onClose}>
-            <section className="modal">
+            <section className="modal" onClick={(e) => e.stopPropagation()}>
                 <form className="modal-inner-container" onSubmit={handleSubmit(onSubmit)}>
                     <h2>Регистрация пациента</h2>
                     <div className="form-input">

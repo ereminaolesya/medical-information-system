@@ -1,16 +1,16 @@
-import './css/PatientCardPage.css';
+import './css/CreateInspectionPage.css';
 
 export function CreateInspectionPage() {
 
     return (
         <div className="patient-card">
             <div className="patient-header">
-                <h2>Создание осмотра</h2>
+                <h1>Создание осмотра</h1>
             </div>
             <div className="patient-info">
                 <div className="patient-info-header">
                     <div className="patient-name">
-                        <h3>name</h3>
+                        <h2>name</h2>
                         <span>
                             <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <circle cx="10" cy="14" r="6" stroke="blue" stroke-width="2" fill="none"/>
@@ -27,65 +27,75 @@ export function CreateInspectionPage() {
                 </div>
                 <div className="insp-info">
                     <div>перв/повторн</div>
-                    <input type="datetime-local"></input>
+                    <div className="inspDate">
+                        <label>Дата осмотра</label>
+                        <input type="datetime-local"></input>
+                    </div>
+
                 </div>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Жалобы</h3>
-                <input type="text"></input>
+                <input type="text" className="inspInput"></input>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Анамнез заболевания</h3>
-                <input type="text"></input>
+                <input type="text" className="inspInput"></input>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Консультация</h3>
-                <div>
-                    <div>
-                        <input type="checkbox"></input>
-                        <label>Требуется консультация</label>
+                <div className="insp-filter">
+                    <div className="insp-switch">
+                        <label className="iSwitch">
+                            <input type="checkbox"></input>
+                            <span className="iSlider"></span>
+                        </label>
+                        <span>Требуется консультация</span>
                     </div>
                     <select>
                         <option>Специализация консультанта</option>
                     </select>
                 </div>
-                <input type="text"></input>
+                <div className="insp-comment">
+                    <label>Комментарий</label>
+                    <input type="text" className="inspInput"></input>
+                </div>
                 <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19" stroke="white" stroke-width="3"
+                    <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
                           stroke-linecap="round" stroke-linejoin="round"/>
                 </svg> Добавить консультацию</button>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Диагнозы</h3>
-                <div>
+                <div className="insp-diseases">
                     <label>Болезни</label>
                     <select>
-                        <option>Специализация консультанта</option>
+                        <option>a</option>
                     </select>
                     <input type="text"></input>
                 </div>
                 <div>
                     <label>Тип диагноза в осмотре</label>
-                    <div>
-                        <div className="patient-filters-radio">
-                            <label className="radio">
+                    <div className="radious">
+                        <div className="insp-filters-radio">
+                            <label className="iRadio">
                                 <input type="checkbox"></input>
-                                <span className="radio-made"></span>
+                                <span className="radio-made-insp"></span>
                             </label>
                             <span>Основной</span>
                         </div>
-                        <div className="patient-filters-radio">
-                            <label className="radio">
+                        <div className="insp-filters-radio">
+                            <label className="iRadio">
                                 <input type="checkbox"></input>
-                                <span className="radio-made"></span>
+                                <span className="radio-made-insp"></span>
                             </label>
                             <span>Сопутствующий</span>
                         </div>
-                        <div className="patient-filters-radio">
-                            <label className="radio">
+                        <div className="insp-filters-radio">
+                            <label className="iRadio">
                                 <input type="checkbox"></input>
-                                <span className="radio-made"></span>
+                                <span className="radio-made-insp"></span>
                             </label>
                             <span>Осложнение</span>
                         </div>
@@ -93,32 +103,32 @@ export function CreateInspectionPage() {
                 </div>
                 <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19" stroke="white" stroke-width="3"
+                    <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
                           stroke-linecap="round" stroke-linejoin="round"/>
                 </svg> Добавить диагноз</button>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Рекомендации по лечению</h3>
-                <input type="text"></input>
+                <input type="text" className="inspInput"></input>
             </div>
-            <div>
+            <div className="patient-info">
                 <h3>Заключение</h3>
-                <div>
-                    <div>
+                <div className="conclusion">
+                    <div className="conclusion-column">
                         <label>Заключение</label>
                         <select>
                             <option>Болезнь</option>
                         </select>
                     </div>
-                    <div>
+                    <div className="conclusion-column">
                         <label>Дата следующего визита</label>
                         <input type="datetime-local"></input>
                     </div>
                 </div>
             </div>
-            <div>
-                <button>Сохранить осмотр</button>
-                <button>Отмена</button>
+            <div className="insp-btns">
+                <button className="saveBtn">Сохранить осмотр</button>
+                <button className="cancelBtn">Отмена</button>
             </div>
         </div>
     )
