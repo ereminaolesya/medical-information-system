@@ -218,18 +218,17 @@ h3 {
 }
 
 .conclusion {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1.5fr 1.5fr 1.5fr;
     gap: 15px;
+    /*width: 100%;*/
+
 }
 .conclusion-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
-.conclusion input, .conclusion select {
-    width: 30vw;
-    height: 4vh;
+    /*width: 100%;*/
 }
 
 .saveBtn {

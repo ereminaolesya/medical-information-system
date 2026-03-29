@@ -1,9 +1,108 @@
 import './css/CreateInspectionPage.css';
+import {z} from "zod";
+import {useFieldArray, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useMutation} from "@tanstack/react-query";
+import {api} from "../api/axios.ts";
+import {useParams} from "react-router-dom";
 
+const regSchema = z.object({
+    date: z.string().datetime(),
+    anamnesis: z.string(),
+    complaints: z.string(),
+    treatment: z.string(),
+    conclusion: z.enum(['Disease', 'Recovery', 'Death']),
+    nextVisitDate: z.string().optional(),
+    deathDate: z.string().optional(),
+    previousInspectionId: z.string(),
+    diagnoses: z.array(
+        z.object({
+            icdDiagnosisId: z.string(),
+            description: z.string(),
+            type: z.enum(['Main', 'Concomitant', 'Complication'])
+        })
+    ),
+    consultations: z.array(
+        z.object({
+            specialityId: z.string(),
+            comment: z.object({
+                content: z.string()
+            })
+        })
+    )
+})
+    .refine((data) => new Date(data.date) <= new Date(), {message: "date earlier"})
+    .refine((data) => {
+        return data.diagnoses.filter(d => d.type === 'Main').length === 1;
+    }, {message: "one main diagnoses"})
+    .refine((data) => {
+        return !(data.conclusion === 'Disease' && !data.nextVisitDate);
+    }, {message: "nextVisitDate"})
+    .refine((data) => {
+        return !(data.conclusion === 'Death' && !data.deathDate);
+    }, {message: "deathDate"});
+
+type FormData = z.infer<typeof regSchema>;
 export function CreateInspectionPage() {
 
+    const {
+        register,
+        handleSubmit,
+        watch,
+        // formState: { errors },
+        control,
+    } = useForm<FormData>({
+        resolver: zodResolver(regSchema),
+        defaultValues: {
+            diagnoses: [],
+            consultations: []
+        }
+    });
+
+    const { id } = useParams();
+
+    const mutation = useMutation({
+        mutationFn: async (data: any) => {
+            const newData = {
+                ...data,
+                date: new Date(data.date).toISOString()
+            };
+
+            return await api.post(`/patient/${id}/inspections`, newData);
+        },
+        onSuccess: (data) => {
+            console.log("Успешная регистрация:", data);
+            alert('Регистрация успешна!');
+        },
+        onError: (error: any) => {
+            console.log("Ошибка регистрации", error.response?.data);
+            alert('Регистрация неуспешна!');
+        },
+    });
+
+    const onSubmit = (data: FormData) => {
+        mutation.mutate(data);
+    };
+
+    const conclusion = watch("conclusion");
+
+    const {
+        fields: diagnosis,
+        append: addDiagnose
+    } = useFieldArray({
+        control,
+        name: "diagnoses"
+    });
+    const {
+        fields: consultations,
+        append: addConsultation
+    } = useFieldArray({
+        control,
+        name: "consultations"
+    });
+
     return (
-        <div className="patient-card">
+        <form className="patient-card" onSubmit={handleSubmit(onSubmit)}>
             <div className="patient-header">
                 <h1>Создание осмотра</h1>
             </div>
@@ -29,20 +128,21 @@ export function CreateInspectionPage() {
                     <div>перв/повторн</div>
                     <div className="inspDate">
                         <label>Дата осмотра</label>
-                        <input type="datetime-local"></input>
+                        <input type="datetime-local" {...register('date')}></input>
                     </div>
 
                 </div>
             </div>
             <div className="patient-info">
                 <h3>Жалобы</h3>
-                <input type="text" className="inspInput"></input>
+                <input type="text" className="inspInput" {...register('complaints')}></input>
             </div>
             <div className="patient-info">
                 <h3>Анамнез заболевания</h3>
-                <input type="text" className="inspInput"></input>
+                <input type="text" className="inspInput" {...register('anamnesis')}></input>
             </div>
-            <div className="patient-info">
+            {consultations.map((field, index) => (
+            <div className="patient-info" key={field.id}>
                 <h3>Консультация</h3>
                 <div className="insp-filter">
                     <div className="insp-switch">
@@ -52,28 +152,32 @@ export function CreateInspectionPage() {
                         </label>
                         <span>Требуется консультация</span>
                     </div>
-                    <select>
+                    <select {...register(`consultations.${index}.specialityId`)}>
                         <option>Специализация консультанта</option>
                     </select>
                 </div>
                 <div className="insp-comment">
                     <label>Комментарий</label>
-                    <input type="text" className="inspInput"></input>
+                    <input type="text" className="inspInput" {...register(`consultations.${index}.comment.content`)}></input>
                 </div>
-                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                <button onClick={() => addConsultation({specialityId: "", comment: { content: "" }})}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
                           stroke-linecap="round" stroke-linejoin="round"/>
                 </svg> Добавить консультацию</button>
-            </div>
-            <div className="patient-info">
+            </div>))}
+
+                <div className="patient-info">
                 <h3>Диагнозы</h3>
-                <div className="insp-diseases">
+                {diagnosis.map((field, index) => (
+                <>
+                <div className="insp-diseases" key={field.id}>
                     <label>Болезни</label>
-                    <select>
+                    <select {...register(`diagnoses.${index}.icdDiagnosisId`)}>
                         <option>a</option>
                     </select>
-                    <input type="text"></input>
+                    <input type="text" {...register(`diagnoses.${index}.description`)}></input>
                 </div>
                 <div>
                     <label>Тип диагноза в осмотре</label>
@@ -101,7 +205,9 @@ export function CreateInspectionPage() {
                         </div>
                     </div>
                 </div>
-                <button><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                </>))}
+                <button onClick={() => addDiagnose({icdDiagnosisId: "", description: "", type: "Concomitant"})}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                              xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 5V19M5 12H19" stroke="white" stroke-width="3"
                           stroke-linecap="round" stroke-linejoin="round"/>
@@ -109,27 +215,40 @@ export function CreateInspectionPage() {
             </div>
             <div className="patient-info">
                 <h3>Рекомендации по лечению</h3>
-                <input type="text" className="inspInput"></input>
+                <input type="text" className="inspInput" {...register('treatment')}></input>
             </div>
             <div className="patient-info">
                 <h3>Заключение</h3>
                 <div className="conclusion">
                     <div className="conclusion-column">
                         <label>Заключение</label>
-                        <select>
-                            <option>Болезнь</option>
+                        <select {...register('conclusion')}>
+                            <option value="Disease">Болезнь</option>
+                            <option value="Recovery">Выздоровление</option>
+                            <option value="Death">Смерть</option>
                         </select>
                     </div>
                     <div className="conclusion-column">
-                        <label>Дата следующего визита</label>
-                        <input type="datetime-local"></input>
+                        {conclusion === "Disease" && (
+                            <>
+                                <label>Дата следующего визита</label>
+                                <input type="datetime-local" {...register("nextVisitDate")} />
+                            </>
+                        )}
+
+                        {conclusion === "Death" && (
+                            <>
+                                <label>Дата смерти</label>
+                                <input type="datetime-local" {...register("deathDate")} />
+                            </>
+                        )}
                     </div>
                 </div>
             </div>
             <div className="insp-btns">
-                <button className="saveBtn">Сохранить осмотр</button>
+                <button className="saveBtn" type="submit">Сохранить осмотр</button>
                 <button className="cancelBtn">Отмена</button>
             </div>
-        </div>
+        </form>
     )
 }
