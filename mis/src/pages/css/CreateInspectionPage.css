@@ -101,6 +101,9 @@
     background-color: #ccc;
     border-radius: 30px;
 }
+.first {
+    background-color: #195998;
+}
 
 .iSlider:before {
     position: absolute;
@@ -165,10 +168,11 @@ h3 {
     flex-direction: column;
     gap: 15px;
 }
-.insp-diseases select {
-    flex-grow: 1;
-    max-width: none;
+
+.typeDiagnosis{
+    margin-top: 10px;
 }
+
 .radious {
     display: flex;
     flex-direction: row;
@@ -255,4 +259,17 @@ h3 {
     display: flex;
     justify-content: center;
     gap: 15px;
+}
+.diagnosesInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.diagnosesInfo strong {
+    font-size: 20px;
+}
+.previousInspections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

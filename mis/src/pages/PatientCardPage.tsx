@@ -88,7 +88,7 @@ export function PatientCardPage() {
             <div className="patient-header">
                 <h2>Медицинская карта пациента</h2>
                 <div>
-                    <Link to="/inspection/create" className="inspButton">Добавить осмотр</Link>
+                    <Link to={`/inspection/create?id=${patientData?.id}`} className="inspButton">Добавить осмотр</Link>
                 </div>
             </div>
             <div className="patient-info">
@@ -154,7 +154,7 @@ export function PatientCardPage() {
             </div>
             <div className="patient-list">
                 {data?.inspections.map((item: any) =>
-                    searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]}/>) : (
+                    searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]} patientData={patientData?.id}/>) : (
                             <div className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
                                 <div className="patient-inspection-header">
                                     <div className="patient-inspname">
@@ -162,7 +162,7 @@ export function PatientCardPage() {
                                         <strong>Амбулаторный осмотр</strong>
                                     </div>
                                     <div className="patient-buttons">
-                                        {item.conclusion !== 'Death' && (<Link to="/inspection/create" className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        {item.conclusion !== 'Death' && (<Link to={`/inspection/create?id=${patientData?.id}&prev=${item.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                         </svg>Добавить осмотр</Link>)}
@@ -186,7 +186,7 @@ export function PatientCardPage() {
     )
 }
 
-function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, level: number, chainFull: any[] }) {
+function ChainList({inspection, level = 0, chainFull = [], patientData} : { inspection: any, level: number, chainFull: any[], patientData: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const { data } = useQuery({
         queryKey: ['chain', inspection.id],
@@ -222,7 +222,7 @@ function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, 
                         <strong>Амбулаторный осмотр</strong>
                     </div>
                     <div className="patient-buttons">
-                        {!inspection.hasNested && inspection.conclusion !== 'Death' && (<Link to="/inspection/create" className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        {!inspection.hasNested && inspection.conclusion !== 'Death' && (<Link to={`/inspection/create?id=${patientData}&prev=${inspection.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>Добавить осмотр</Link>)}
@@ -236,7 +236,7 @@ function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, 
                 <span className="patientText">Медицинский работник: {inspection.doctor}</span>
             </div>
             {isOpen && nextInChain && (
-                <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} />
+                <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} patientData={patientData} />
             )}
         </div>
     );
