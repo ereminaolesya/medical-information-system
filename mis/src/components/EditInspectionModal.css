@@ -1,0 +1,13 @@
+.modal-inner-container-inspection {
+    position: relative;
+    border-radius: 8px;
+    padding: 20px 30px;
+    background: #FAFDFF;
+    box-shadow: 0 3px 10px #32313187;
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+    scrollbar-width: none;
+}

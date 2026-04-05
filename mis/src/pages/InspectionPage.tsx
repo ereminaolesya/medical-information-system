@@ -2,6 +2,8 @@ import './css/InspectionPage.css';
 import {useQuery} from "@tanstack/react-query";
 import {api} from "../api/axios.ts";
 import {useParams} from "react-router-dom";
+import {useState} from "react";
+import {EditInspectionModal} from "../components/EditInspectionModal.tsx";
 
 
 export function InspectionPage() {
@@ -15,13 +17,16 @@ export function InspectionPage() {
             return res.data;
         },
     });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     if (isLoading) return <div>Загрузка...</div>;
     return (
         <div className="patient-card">
             <div className="patient-info">
                 <div className="patient-header-inspection">
                     <h1>Амбулаторный осмотр от </h1>
-                    <button className="saveBtn" type="submit">Редактировать осмотр</button>
+                    <button className="saveBtn" type="button" onClick={() => setIsModalOpen(true)}>Редактировать осмотр</button>
                 </div>
                 {/*<div className="patient-info-header">*/}
                     <div className="patient-info-insp">
@@ -74,6 +79,7 @@ export function InspectionPage() {
                     <p>Дата смерти: {new Date(inspection.deathDate).toLocaleString()}</p>
                 )}
             </div>
+            {isModalOpen && (<EditInspectionModal onClose={() => setIsModalOpen(false)} />)}
         </div>
     )
 }
