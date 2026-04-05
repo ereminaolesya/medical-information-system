@@ -1,0 +1,20 @@
+.patient-header-inspection h1{
+    color: #003871;
+}
+.patient-name-insp {
+    font-size: larger;
+    line-height: 1;
+}
+.patient-info-insp {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.patient-header-inspection {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.doc {
+    color: #757575;
+}
