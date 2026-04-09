@@ -2,21 +2,18 @@ import './EditInspectionModal.css'
 import {z} from "zod";
 import {useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {useMutation, useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {api} from "../api/axios.ts";
 import Select from "react-select";
-import {useNavigate, useSearchParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 
 const regSchema = z.object({
-    date: z.string(),
     anamnesis: z.string(),
     complaints: z.string(),
     treatment: z.string(),
     conclusion: z.enum(['Disease', 'Recovery', 'Death']),
     nextVisitDate: z.string().optional(),
     deathDate: z.string().optional(),
-    previousInspectionId: z.string().optional(),
     diagnoses: z.array(
         z.object({
             icdDiagnosisId: z.string(),
@@ -26,17 +23,8 @@ const regSchema = z.object({
             code: z.string().optional(),
             name: z.string().optional()
         })
-    ),
-    consultations: z.array(
-        z.object({
-            specialityId: z.string(),
-            comment: z.object({
-                content: z.string()
-            })
-        })
     )
 })
-    .refine((data) => new Date(data.date) <= new Date(), {message: "date earlier", path: ["date"]})
     .refine((data) => {
         return data.diagnoses.filter(d => d.type === 'Main').length === 1;
     }, {message: "one main diagnoses", path: ["diagnoses"]})
@@ -45,32 +33,21 @@ const regSchema = z.object({
     }, {message: "nextVisitDate", path: ["nextVisitDate"]})
     .refine((data) => {
         return !(data.conclusion === 'Death' && !data.deathDate);
-    }, {message: "deathDate", path: ["deathDate"]})
-    .refine((data) => {
-        const specialtiest = data.consultations.map(c => c.specialityId);
-        return specialtiest.length === new Set(specialtiest).size;
-    }, {message: "double specialties"})
-    .refine((data) => {
-        return data.consultations.every(c => c.comment.content);
-    }, {message: "need comment", path: ["consultations"]});
+    }, {message: "deathDate", path: ["deathDate"]});
 
 
 type FormData = z.infer<typeof regSchema> & {
     newIcdDiagnosisId?: string;
     newDescription?: string;
     newType?: 'Main' | 'Concomitant' | 'Complication';
-
-    newSpecialityId?: string;
-    newComment?: string;
-    consultRequired?: boolean;
-
 };
 
 type Props = {
-    onClose: () => void
+    onClose: () => void;
+    id: string;
 }
 
-export function EditInspectionModal({ onClose }: Props) {
+export function EditInspectionModal({ onClose, id }: Props) {
     const {
         register,
         handleSubmit,
@@ -79,48 +56,81 @@ export function EditInspectionModal({ onClose }: Props) {
         control,
         getValues,
         setValue,
+        reset
     } = useForm<FormData>({
         resolver: zodResolver(regSchema),
         defaultValues: {
             diagnoses: [],
-            consultations: [],
             newType: "Main"
         }
     });
 
-    const [searchParams] = useSearchParams();
-    const id = searchParams.get("id");
-    const prev = searchParams.get("prev");
-
-    const [isRepeat, setIsRepeat] = useState(!!prev);
-
-    useEffect(() => {
-        if (prev) {
-            setValue("previousInspectionId", prev);
-            setIsRepeat(true);
+    const { data, /*isLoading*/ } = useQuery({
+        queryKey: ['inspection', id],
+        queryFn: async () => {
+            const response = await api.get(`/inspection/${id}`);
+            return response.data;
         }
-    }, [prev]);
+    });
+
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async (data: any) => {
             const newData = {
                 ...data,
-                date: new Date(data.date).toISOString(),
                 nextVisitDate: data.nextVisitDate ? new Date(data.nextVisitDate).toISOString() : null,
                 deathDate: data.deathDate ? new Date(data.deathDate).toISOString() : null
             };
-
-            return await api.post(`/patient/${id}/inspections`, newData);
+            return await api.put(`/inspection/${id}`, newData);
         },
         onSuccess: (data) => {
-            console.log("Успешная регистрация:", data);
-            alert('Регистрация успешна!');
+            queryClient.invalidateQueries({queryKey: ['inspection', id]})
+            console.log("Осмотр обновлен", data);
+            alert('Осмотр обновлен!');
+            onClose();
         },
         onError: (error: any) => {
-            console.log("Ошибка регистрации", error.response?.data);
-            alert('Регистрация неуспешна!');
+            console.log("Осмотр не обновлен", error.response?.data);
+            alert('Осмотр не обновлен!');
         },
     });
+
+    useEffect(() => {
+        if (!data) return;
+        (async () => {
+            const ids = await Promise.all(
+                data.diagnoses.map(async (d) => {
+                    const res = await api.get("/dictionary/icd10",{
+                        params: {
+                            request: d.code,
+                            page: 1,
+                            size: 1
+                        }
+                    });
+                    return res.data.records[0].id;
+                })
+            );
+
+            reset({
+                anamnesis: data.anamnesis,
+                complaints: data.complaints,
+                treatment: data.treatment,
+                conclusion: data.conclusion,
+                nextVisitDate: data.nextVisitDate ? data.nextVisitDate.slice(0, 16) : '',
+                deathDate: data.deathDate ? data.deathDate.slice(0, 16) : '',
+                diagnoses: data.diagnoses.map((d, i) => ({
+                    icdDiagnosisId: ids[i],
+                    description: d.description,
+                    type: d.type,
+
+                    code: d.code,
+                    name: d.name
+                }))
+            });
+        })();
+
+    }, [data, reset]);
 
     const onSubmit = (data: FormData) => {
         mutation.mutate(data);
@@ -181,9 +191,8 @@ export function EditInspectionModal({ onClose }: Props) {
         setValue("newType", "Main");
     }
 
-    const navigate = useNavigate();
 
-    return (
+     return (
         <div className="modal-overlay" onClick={onClose}>
             <section className="modal" onClick={(e) => e.stopPropagation()}>
                 <form className="modal-inner-container-inspection" onSubmit={handleSubmit(onSubmit)}>
@@ -284,8 +293,8 @@ export function EditInspectionModal({ onClose }: Props) {
                         </div>
                     </div>
                     <div className="insp-btns">
-                        <button className="saveBtn" type="submit" onClick={onClose}>Сохранить осмотр</button>
-                        <button className="cancelBtn" type="button" onClick={() => navigate(`/patient/${id}`)}>Отмена</button>
+                        <button className="saveBtn" type="submit">Сохранить осмотр</button>
+                        <button className="cancelBtn" type="button" onClick={onClose}>Отмена</button>
                     </div>
                 </form>
             </section>

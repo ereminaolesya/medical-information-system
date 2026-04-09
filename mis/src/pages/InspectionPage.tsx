@@ -46,7 +46,7 @@ export function InspectionPage() {
                 <p>{inspection.anamnesis}</p>
             </div>
 
-            {inspection.consultations.map((item) => (
+            {inspection.consultations.map((item: any) => (
             <div className="patient-info">
                 <h3>Консультация</h3>
                 <strong>Консультант: {item.rootComment?.author?.name}</strong>
@@ -56,7 +56,7 @@ export function InspectionPage() {
 
             <div className="patient-info">
                 <h3>Диагнозы</h3>
-                {inspection?.diagnoses.map((item) => (
+                {inspection?.diagnoses.map((item: any) => (
                     <div className="diagnosesInfo" key={item.id}>
                         <strong>{item.code} - {item.name}</strong>
                         <div><p>Тип в осмотре: {item.type === 'Main' ? "Основной" : item.type === 'Concomitant' ? "Сопутствующий" : "Осложнение"}</p>
@@ -79,7 +79,7 @@ export function InspectionPage() {
                     <p>Дата смерти: {new Date(inspection.deathDate).toLocaleString()}</p>
                 )}
             </div>
-            {isModalOpen && (<EditInspectionModal onClose={() => setIsModalOpen(false)} />)}
+            {isModalOpen && (<EditInspectionModal onClose={() => setIsModalOpen(false)} id={id} />)}
         </div>
     )
 }
