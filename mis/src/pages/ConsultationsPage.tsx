@@ -1,6 +1,6 @@
-import './css/PatientCardPage.css';
+// import './css/ConsultationsPage.css';
 import z from "zod";
-import {Link, useParams, useSearchParams} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useQuery} from "@tanstack/react-query";
@@ -15,8 +15,7 @@ const inspSchema = z.object({
     size: z.string()
 })
 type FormData = z.infer<typeof inspSchema>;
-export function PatientCardPage() {
-    const { id } = useParams();
+export function ConsultationsPage() {
     const [searchParams, setSearchParams] = useSearchParams();
 
     const {
@@ -33,19 +32,13 @@ export function PatientCardPage() {
     });
 
     const { data } = useQuery({
-        queryKey: ['inspections', id, searchParams.toString()],
+        queryKey: ['consultation', searchParams.toString()],
         queryFn: async () => {
-            const response = await api.get(`/patient/${id}/inspections?${searchParams.toString()}`);
+            const response = await api.get(`/consultation?${searchParams.toString()}`);
             return response.data;
         }
     });
-    const { data: patientData } = useQuery({
-        queryKey: ['patient', id],
-        queryFn: async () => {
-            const patresponse = await api.get(`/patient/${id}`);
-            return patresponse.data;
-        }
-    });
+
     const { data: icdData, isLoading } = useQuery({
         queryKey: ['icdRoots'],
         queryFn: async () => {
@@ -87,27 +80,9 @@ export function PatientCardPage() {
     return (
         <div className="patient-card">
             <div className="patient-header">
-                <h2>Медицинская карта пациента</h2>
-                <div>
-                    <Link to={`/inspection/create?id=${patientData?.id}`} className="inspButton">Добавить осмотр</Link>
-                </div>
+                <h2>Консультации</h2>
             </div>
-            <div className="patient-info">
-                <div className="patient-name">
-                    <h3>{patientData?.name}</h3>
-                    <span>{patientData?.gender === "Male" ? <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="10" cy="14" r="6" stroke="blue" stroke-width="2" fill="none" />
-                        <line x1="15" y1="9" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="17" y1="2" x2="22" y2="2" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                        <line x1="22" y1="2" x2="22" y2="7" stroke="blue" stroke-width="2" stroke-linecap="round"/>
-                    </svg> : <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="9" r="6" stroke="blue" stroke-width="2" fill="none" />
-                        <line x1="12" y1="15" x2="12" y2="23" stroke="blue" stroke-width="2" />
-                        <line x1="8" y1="19" x2="16" y2="19" stroke="blue" stroke-width="2" />
-                    </svg>}</span>
-                </div>
-                <span>Дата рождения: {new Date(patientData?.birthday).toLocaleDateString()}</span>
-            </div>
+
             <div className="patient-filters">
                 <div className="patient-filters-row1">
                     <div className="patient-filters-cell">
@@ -155,28 +130,24 @@ export function PatientCardPage() {
             </div>
             <div className="patient-list">
                 {data?.inspections.map((item: any) =>
-                    searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]} patientData={patientData?.id}/>) : (
-                            <div className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
-                                <div className="patient-inspection-header">
-                                    <div className="patient-inspname">
-                                        <div className="dataDiv"><span className="dataInspection">{new Date(item.date).toLocaleDateString()}</span></div>
-                                        <strong>Амбулаторный осмотр</strong>
-                                    </div>
-                                    <div className="patient-buttons">
-                                        {item.conclusion !== 'Death' && (<Link to={`/inspection/create?id=${patientData?.id}&prev=${item.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                            <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>Добавить осмотр</Link>)}
-                                        <Link to={`/inspection/${item.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>Детали осмотра</Link>
-                                    </div>
+                    searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]} />) : (
+                        <div className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
+                            <div className="patient-inspection-header">
+                                <div className="patient-inspname">
+                                    <div className="dataDiv"><span className="dataInspection">{new Date(item.date).toLocaleDateString()}</span></div>
+                                    <strong>Амбулаторный осмотр</strong>
                                 </div>
-                                <span>Заключение: <span className="">{item.conclusion === "Death" ? "смерть" : item.conclusion === "Recovery" ? "выздоровление" : "болезнь"}</span></span>
-                                <span>Основной диагноз: <strong>{item.diagnosis.name} ({item.diagnosis.code})</strong></span>
-                                <span className="patientText">Медицинский работник: {item.doctor}</span>
+                                <div className="patient-buttons">
+                                    <Link to={`/inspection/${item.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>Детали осмотра</Link>
+                                </div>
                             </div>
-                ))}
+                            <span>Заключение: <span className="">{item.conclusion === "Death" ? "смерть" : item.conclusion === "Recovery" ? "выздоровление" : "болезнь"}</span></span>
+                            <span>Основной диагноз: <strong>{item.diagnosis.name} ({item.diagnosis.code})</strong></span>
+                            <span className="patientText">Медицинский работник: {item.doctor}</span>
+                        </div>
+                    ))}
             </div>
             <div className="pages">
                 <button className="buttonsPage" onClick={() => changePage(page - 1)}>&lt;</button>
@@ -187,7 +158,7 @@ export function PatientCardPage() {
     )
 }
 
-function ChainList({inspection, level = 0, chainFull = [], patientData} : { inspection: any, level: number, chainFull: any[], patientData: string }) {
+function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, level: number, chainFull: any[] }) {
     const [isOpen, setIsOpen] = useState(false);
     const { data } = useQuery({
         queryKey: ['chain', inspection.id],
@@ -223,10 +194,6 @@ function ChainList({inspection, level = 0, chainFull = [], patientData} : { insp
                         <strong>Амбулаторный осмотр</strong>
                     </div>
                     <div className="patient-buttons">
-                        {!inspection.hasNested && inspection.conclusion !== 'Death' && (<Link to={`/inspection/create?id=${patientData}&prev=${inspection.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M11 4H4C2.89543 4 2 4.89543 2 6V20C2 21.1046 2.89543 22 4 22H18C19.1046 22 20 21.1046 20 20V13" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M18.5 2.5C19.3284 1.67157 20.6716 1.67157 21.5 2.5C22.3284 3.32843 22.3284 4.67157 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>Добавить осмотр</Link>)}
                         <Link to={`/inspection/${inspection.id}`} className="buttonInpection"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>Детали осмотра</Link>
@@ -237,7 +204,7 @@ function ChainList({inspection, level = 0, chainFull = [], patientData} : { insp
                 <span className="patientText">Медицинский работник: {inspection.doctor}</span>
             </div>
             {isOpen && nextInChain && (
-                <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} patientData={patientData} />
+                <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} />
             )}
         </div>
     );
