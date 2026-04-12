@@ -26,10 +26,12 @@ export function LoginPage() {
         mutationFn: async (data: any) => {
             return await api.post("/doctor/login", data);
         },
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             const token = data.data.token;
             alert('Логин успешна!');
             localStorage.setItem("token", token);
+            const res = await api.get("/doctor/profile");
+            localStorage.setItem("userId", res.data.id);
             navigate('/profile')
         },
         onError: (error: any) => {

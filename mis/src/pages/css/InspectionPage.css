@@ -18,3 +18,76 @@
 .doc {
     color: #757575;
 }
+.specName {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    text-transform: lowercase;
+}
+.commentText {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 7px;
+}
+.comment{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    border-bottom: 1px solid #d7dae9;
+    max-width: 40vw;
+    padding-bottom: 10px;
+}
+
+.commentInfo {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.commentInfo button {
+    all: unset;
+    color: #1c5fb3;
+}
+
+.inspection-row-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    gap: 15px;
+}
+.inspection-row-container .comment {
+    margin-left: calc(var(--level) * 30px);
+    width: auto;
+}
+
+.corner {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 25px;
+    height: 40px;
+    border-left: 2px solid #CED4DAFF;
+    border-bottom: 2px solid #CED4DAFF;
+    left: calc(var(--level) * 30px - 30px);
+}
+
+.commentForm, .commentEditForm {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 240%;
+    max-width: 1300px;
+    align-items: center;
+}
+.commentForm input, .commentEditForm input {
+    flex: 1;
+    height: 38px;
+}
+.commentForm button {
+    height: 38px;
+}
+.commentEditForm button {
+    background: #fd9500;
+}

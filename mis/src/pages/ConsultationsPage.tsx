@@ -131,7 +131,7 @@ export function ConsultationsPage() {
             <div className="patient-list">
                 {data?.inspections.map((item: any) =>
                     searchParams.get('grouped') === 'true' ? (<ChainList inspection={item} level={0} chainFull={[]} />) : (
-                        <div className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
+                        <Link to={`/inspection/${item.id}`} className={`patient  ${item.conclusion === 'Death' ? 'death' : ''}`} key={item.id}>
                             <div className="patient-inspection-header">
                                 <div className="patient-inspname">
                                     <div className="dataDiv"><span className="dataInspection">{new Date(item.date).toLocaleDateString()}</span></div>
@@ -146,7 +146,7 @@ export function ConsultationsPage() {
                             <span>Заключение: <span className="">{item.conclusion === "Death" ? "смерть" : item.conclusion === "Recovery" ? "выздоровление" : "болезнь"}</span></span>
                             <span>Основной диагноз: <strong>{item.diagnosis.name} ({item.diagnosis.code})</strong></span>
                             <span className="patientText">Медицинский работник: {item.doctor}</span>
-                        </div>
+                        </Link>
                     ))}
             </div>
             <div className="pages">
@@ -173,11 +173,11 @@ function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, 
     return (
         <div className="inspection-row-container" style={{ '--level': level } as React.CSSProperties}>
             {level > 0 && <div className="corner"></div>}
-            <div className={`patient  ${inspection.conclusion === 'Death' ? 'death' : ''}`} key={inspection.id}>
+            <Link to={`/inspection/${inspection.id}`} className={`patient  ${inspection.conclusion === 'Death' ? 'death' : ''}`} key={inspection.id}>
                 <div className="patient-inspection-header">
                     <div className="patient-inspname">
                         {inspection.hasNested && (
-                            <button className="chainButton" onClick={() => setIsOpen(!isOpen)}>
+                            <button className="chainButton" onClick={(e) => {setIsOpen(!isOpen); e.preventDefault();}}>
                                 {isOpen ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                                                xmlns="http://www.w3.org/2000/svg">
                                         <path d="M5 12H19" stroke="white" stroke-width="3"
@@ -202,7 +202,7 @@ function ChainList({inspection, level = 0, chainFull = []} : { inspection: any, 
                 <span>Заключение: <span className="">{inspection.conclusion === "Death" ? "смерть" : inspection.conclusion === "Recovery" ? "выздоровление" : "болезнь"}</span></span>
                 <span>Основной диагноз: <strong>{inspection.diagnosis.name} ({inspection.diagnosis.code})</strong></span>
                 <span className="patientText">Медицинский работник: {inspection.doctor}</span>
-            </div>
+            </Link>
             {isOpen && nextInChain && (
                 <ChainList inspection={nextInChain} level={level + 1} chainFull={currentChain} />
             )}
