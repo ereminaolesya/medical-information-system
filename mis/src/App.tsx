@@ -8,6 +8,7 @@ import {PatientCardPage} from "./pages/PatientCardPage.tsx";
 import {CreateInspectionPage} from "./pages/CreateInspectionPage.tsx";
 import {InspectionPage} from "./pages/InspectionPage.tsx";
 import {ConsultationsPage} from "./pages/ConsultationsPage.tsx";
+import {ReportPage} from "./pages/ReportPage.tsx";
 function App() {
 
   return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/inspection/create" element={<CreateInspectionPage />} />
                 <Route path="/inspection/:id" element={<InspectionPage />} />
                 <Route path="/consultations" element={<ConsultationsPage />} />
+                <Route path="/reports" element={<ReportPage />} />
             </Routes>
         </main>
     </>

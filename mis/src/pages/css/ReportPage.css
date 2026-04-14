@@ -1,0 +1,26 @@
+.dateReport {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.selectRoot {
+    flex: 1;
+}
+
+.reportPage {
+    display: flex;
+    gap: 20px;
+}
+
+.selectRoot .select__multi-value {
+    background-color: #003871;
+}
+
+.selectRoot .select__multi-value__label {
+    color: white;
+}
+
+.selectRoot .select__multi-value__remove {
+    color: white;
+}

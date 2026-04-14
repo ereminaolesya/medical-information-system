@@ -80,7 +80,7 @@ export function InspectionPage() {
     )
 }
 
-function CommentList({comments, level = 0, parentId, mutation, editMutation, specialityId, userSpec} : { comments: any, level: number, parentId: string, mutation: any, editMutation: any, specialityId: string, userSpec: any }) {
+function CommentList({comments, level = 0, parentId, mutation, editMutation, specialityId, userSpec, speciality} : { comments: any, level: number, parentId: string, mutation: any, editMutation: any, specialityId: string, userSpec: any, speciality: string }) {
     const [isOpen, setIsOpen] = useState<Record<string, boolean>>({});
     const toggle = (id: string) => {
         setIsOpen(prev => ({
@@ -110,7 +110,7 @@ function CommentList({comments, level = 0, parentId, mutation, editMutation, spe
                 return (
                     <>
                         <div className="comment">
-                            <div className="specName"><strong>{comment.author}</strong> <p className="doc">({comment.speciality})</p></div>
+                            <div className="specName"><strong>{comment.author}</strong> <p className="doc">({speciality})</p></div>
 
                             {editOpen === comment.id ? (
                                 <form className="commentEditForm" onSubmit={(e) => {
@@ -139,7 +139,7 @@ function CommentList({comments, level = 0, parentId, mutation, editMutation, spe
                         </div>
                         <div key={comment.id}>
                             {isOpen[comment.id] && (
-                                <CommentList comments={comments} level={level + 1} parentId={comment.id} mutation={mutation} editMutation={editMutation} specialityId={specialityId} userSpec={userSpec} />
+                                <CommentList comments={comments} level={level + 1} parentId={comment.id} mutation={mutation} editMutation={editMutation} specialityId={specialityId} userSpec={userSpec} speciality={speciality} />
                             )}
                         </div>
                     </>
@@ -240,7 +240,7 @@ function Consult({ item }: { item: any }) {
                     </form>)}
             </div>
             {isOpen && data?.comments && (
-                <CommentList comments={data.comments} level={0} parentId={item.rootComment?.id} mutation={mutation} editMutation={editMutation} specialityId={item.speciality.id} userSpec={userSpec} />
+                <CommentList comments={data.comments} level={0} parentId={item.rootComment?.id} mutation={mutation} editMutation={editMutation} specialityId={item.speciality.id} userSpec={userSpec} speciality={item.speciality.name} />
             )}
         </div>
     );
