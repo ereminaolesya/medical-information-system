@@ -1,57 +1,5 @@
-.login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-}
-
-.login-form {
-    display: flex;
-    background: #b2a7d623;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 3px 10px #32313187;
-    width: 500px;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.form-input {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-.form-input input {
-    padding: 10px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #1c5fb3;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-.reg-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #b7b1caff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
 .patient-info {
-    background: #b2a7d623;
+    background: var(--color-gray);
     display: flex;
     padding: 20px 30px;
     border-radius: 8px;
@@ -102,7 +50,7 @@
     border-radius: 30px;
 }
 .first {
-    background-color: #195998;
+    background-color: var(--color-blue-second);
 }
 
 .iSlider:before {
@@ -117,7 +65,7 @@
 }
 
 input:checked + .iSlider {
-    background-color: #195998;
+    background-color: var(--color-blue-second);
 }
 
 input:checked + .iSlider:before {
@@ -153,7 +101,7 @@ input:checked + .iSlider:before {
     align-items: center;
     justify-content: center;
     align-self: flex-start;
-    background: #1c5fb3;
+    background: var(--color-blue-second);
     color: white;
     font-weight: bold;
     border: none;
@@ -161,7 +109,7 @@ input:checked + .iSlider:before {
 }
 
 h3 {
-    color: #003871;
+    color: var(--color-blue);
 }
 .insp-diseases {
     display: flex;
@@ -202,7 +150,7 @@ h3 {
     left: 0;
     right: 0;
     bottom: 0;
-    border: 2px solid #888;
+    border: 2px solid var(--color-gray-second);
     border-radius: 50%;
 }
 
@@ -211,33 +159,30 @@ h3 {
     position: absolute;
     width: 10px;
     height: 10px;
-    background: #195998;
+    background: var(--color-blue-second);
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 .iRadio input:checked + .radio-made-insp {
-    border: 2px solid #195998;
+    border: 2px solid var(--color-blue-second);
 }
 
 .conclusion {
     display: grid;
     grid-template-columns: 1.5fr 1.5fr 1.5fr;
     gap: 15px;
-    /*width: 100%;*/
-
 }
 .conclusion-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /*width: 100%;*/
 }
 
 .saveBtn {
     padding: 12px 20px;
-    background-color: #1c5fb3;
+    background-color: var(--color-blue-second);
     color: white;
     border: none;
     border-radius: 4px;

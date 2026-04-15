@@ -13,7 +13,7 @@
 
 .inspButton {
     border: none;
-    background: #195998;
+    background: var(--color-blue-second);
     color: #fff;
     padding: 10px 10px;
     border-radius: 3px;
@@ -33,7 +33,7 @@
 
 .searchButton {
     border: none;
-    background: #195998;
+    background: var(--color-blue-second);
     color: #fff;
     padding: 10px 60px;
     border-radius: 3px;
@@ -46,7 +46,7 @@
 
 .patient-filters {
     display: flex;
-    background: #b2a7d623;
+    background: var(--color-gray);
     padding: 20px 30px;
     border-radius: 8px;
     flex-direction: column;
@@ -110,7 +110,7 @@ select {
     left: 0;
     right: 0;
     bottom: 0;
-    border: 2px solid #888;
+    border: 2px solid var(--color-gray-second);
     border-radius: 50%;
 }
 
@@ -119,14 +119,14 @@ select {
     position: absolute;
     width: 10px;
     height: 10px;
-    background: #195998;
+    background: var(--color-blue-second);
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 .radio input:checked + .radio-made {
-    border: 2px solid #195998;
+    border: 2px solid var(--color-blue-second);
 }
 
 .patient-list {
@@ -147,7 +147,7 @@ select {
 
 .patient {
     display: flex;
-    background: #b2a7d623;
+    background: var(--color-gray);
     padding: 20px 30px;
     flex-direction: column;
     gap: 15px;
@@ -159,7 +159,7 @@ select {
 }
 
 .patientText {
-    color: #757575;
+    color: var(--color-gray-second);
 }
 
 .pages {
@@ -188,7 +188,7 @@ select {
 }
 
 .dataInspection {
-    background: #6F808AFF;
+    background: var(--color-gray-second);
     color: white;
     padding: 4px 12px;
     border-radius: 3px;
@@ -200,7 +200,7 @@ select {
 .buttonInpection {
     background: none;
     border: none;
-    color: #3b7ccc;
+    color: var(--color-blue-second);
     font-weight: bold;
     align-items: center;
     display: flex;
@@ -212,7 +212,7 @@ select {
 .chainButton {
     border: none;
     border-radius: 3px;
-    background: #3b7ccc;
+    background: var(--color-blue-second);
     display: flex;
     padding: 5px;
     margin-right: -7px;

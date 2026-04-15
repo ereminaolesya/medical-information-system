@@ -14,4 +14,9 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
+  --color-blue: #003871;
+  --color-blue-second: #1c5fb3;
+  --color-gray: #b2a7d623;
+  --color-gray-second: #757575;
 }

@@ -1,5 +1,5 @@
 .patient-header-inspection h1{
-    color: #003871;
+    color: var(--color-blue);
 }
 .patient-name-insp {
     font-size: larger;
@@ -16,7 +16,7 @@
     align-items: center;
 }
 .doc {
-    color: #757575;
+    color: var(--color-gray-second);
 }
 .specName {
     display: flex;
@@ -47,7 +47,7 @@
 
 .commentInfo button {
     all: unset;
-    color: #1c5fb3;
+    color: var(--color-blue-second);
 }
 
 .inspection-row-container {

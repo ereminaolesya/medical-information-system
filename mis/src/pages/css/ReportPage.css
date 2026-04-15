@@ -14,7 +14,7 @@
 }
 
 .selectRoot .select__multi-value {
-    background-color: #003871;
+    background-color: var(--color-blue);
 }
 
 .selectRoot .select__multi-value__label {

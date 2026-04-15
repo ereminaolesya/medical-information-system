@@ -13,7 +13,7 @@
 }
 .patients-header button {
     border: none;
-    background: #195998;
+    background: var(--color-blue-second);
     color: #fff;
     padding: 10px 10px;
     border-radius: 3px;
@@ -21,7 +21,7 @@
 
 .searchButton {
     border: none;
-    background: #195998;
+    background: var(--color-blue-second);
     color: #fff;
     padding: 10px 60px;
     border-radius: 3px;
@@ -34,7 +34,7 @@
 
 .patients-filters {
     display: flex;
-    background: #b2a7d623;
+    background: var(--color-gray);
     padding: 20px 30px;
     border-radius: 8px;
     flex-direction: column;
@@ -49,7 +49,6 @@
 
 .patients-filters-row1 {
     display: grid;
-    /*gap: 150px;*/
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 }
@@ -113,7 +112,7 @@ select {
 }
 
 input:checked + .slider {
-    background-color: #195998;
+    background-color: var(--color-blue-second);
 }
 
 input:checked + .slider:before {
@@ -135,7 +134,7 @@ input:checked + .slider:before {
 
 .patient {
     display: flex;
-    background: #b2a7d623;
+    background: var(--color-gray);
     padding: 20px 30px;
     flex-direction: column;
     gap: 15px;
@@ -145,7 +144,7 @@ input:checked + .slider:before {
 }
 
 .patientText {
-    color: #757575;
+    color: var(--color-gray-second);
     text-decoration: none;
 }
 

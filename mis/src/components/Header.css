@@ -4,7 +4,7 @@
     align-items: center;
     padding: 0 30px;
     height: 70px;
-    background-color: #003871;
+    background-color: var(--color-blue);
     color: #fff;
 }
 
