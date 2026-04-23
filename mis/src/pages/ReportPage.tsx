@@ -6,7 +6,7 @@ import {useState} from "react";
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import Table from "react-bootstrap/Table";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 
 const regSchema = z.object({
     start: z.string(),
@@ -97,36 +97,60 @@ export function ReportPage() {
                 <button type="submit">Сохранить сводку</button>
             </form>
             {report && (
-                <Table striped bordered hover responsive>
-                    <thead>
-                    <tr>
-                        <th>Пациент</th>
-                        <th>Дата рождения</th>
-                        <th>Пол</th>
-                        {report.filters.icdRoots.map((item: any) => (
-                            <th>{item}</th>
-                        ))}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {report.records.map((item: any) => (
-                        <tr>
-                            <td>{item.patientName}</td>
-                            <td>{new Date(item.patientBirthdate).toLocaleDateString()}</td>
-                            <td>{item.gender === 'Male' ? 'М' : 'Ж'}</td>
-                            {report.filters.icdRoots.map((code: any) => (
-                                <td>{item.visitsByRoot[code] || 0}</td>
-                            ))}
-                        </tr>
-                    ))}
-                    <tr>
-                        <td colSpan={3}><strong>Итого:</strong></td>
-                        {report.filters.icdRoots.map((item: any) => (
-                            <td>{report.summaryByRoot[item] || 0}</td>
-                        ))}
-                    </tr>
-                    </tbody>
-                </Table>
+              <TableContainer component={Paper} sx={{ mt: 3 }}>
+                  <Table>
+                      <TableHead>
+                          <TableRow sx={{ backgroundColor: "#111" }}>
+                              <TableCell sx={{ color: "#fff" }}>Пациент</TableCell>
+                              <TableCell sx={{ color: "#fff" }}>Дата рождения</TableCell>
+                              <TableCell sx={{ color: "#fff" }}>Пол</TableCell>
+
+                              {report.filters.icdRoots.map((item: any) => (
+                                <TableCell key={item} sx={{ color: "#fff" }}>
+                                    {item}
+                                </TableCell>
+                              ))}
+                          </TableRow>
+                      </TableHead>
+
+                      <TableBody>
+                          {report.records.map((item: any, idx: number) => (
+                            <TableRow
+                              key={idx}
+                              sx={{
+                                  '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' }
+                              }}
+                            >
+                                <TableCell>{item.patientName}</TableCell>
+                                <TableCell>
+                                    {new Date(item.patientBirthdate).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>
+                                    {item.gender === 'Male' ? 'М' : 'Ж'}
+                                </TableCell>
+
+                                {report.filters.icdRoots.map((code: any) => (
+                                  <TableCell key={code}>
+                                      {item.visitsByRoot[code] || 0}
+                                  </TableCell>
+                                ))}
+                            </TableRow>
+                          ))}
+
+                          <TableRow sx={{ backgroundColor: "#eee", fontWeight: "bold" }}>
+                              <TableCell colSpan={3}>
+                                  <strong>Итого:</strong>
+                              </TableCell>
+
+                              {report.filters.icdRoots.map((item: any) => (
+                                <TableCell key={item}>
+                                    {report.summaryByRoot[item] || 0}
+                                </TableCell>
+                              ))}
+                          </TableRow>
+                      </TableBody>
+                  </Table>
+              </TableContainer>
             )}
 
         </div>
