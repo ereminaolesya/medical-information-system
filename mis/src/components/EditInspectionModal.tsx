@@ -100,7 +100,7 @@ export function EditInspectionModal({ onClose, id }: Props) {
         if (!data) return;
         (async () => {
             const ids = await Promise.all(
-                data.diagnoses.map(async (d) => {
+                data.diagnoses.map(async (d: { code: any; }) => {
                     const res = await api.get("/dictionary/icd10",{
                         params: {
                             request: d.code,
@@ -119,7 +119,7 @@ export function EditInspectionModal({ onClose, id }: Props) {
                 conclusion: data.conclusion,
                 nextVisitDate: data.nextVisitDate ? data.nextVisitDate.slice(0, 16) : '',
                 deathDate: data.deathDate ? data.deathDate.slice(0, 16) : '',
-                diagnoses: data.diagnoses.map((d, i) => ({
+                diagnoses: data.diagnoses.map((d: { description: any; type: any; code: any; name: any; }, i: string | number | any) => ({
                     icdDiagnosisId: ids[i],
                     description: d.description,
                     type: d.type,
@@ -222,7 +222,7 @@ export function EditInspectionModal({ onClose, id }: Props) {
                             <div className="insp-diseases">
                                 <label>Болезни</label>
                                 <Select options={icdOptions}
-                                        value={icdOptions?.find(o => o.value === getValues("newIcdDiagnosisId"))}
+                                        value={icdOptions?.find((o: { value: string | undefined; }) => o.value === getValues("newIcdDiagnosisId"))}
                                         onChange={(selected) => setValue("newIcdDiagnosisId", selected.value || "")}
                                         onInputChange={(input, meta) => { if (meta.action === "input-change") {setSearch(input)}}}
                                 />
