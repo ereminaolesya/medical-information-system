@@ -75,7 +75,7 @@ export function InspectionPage() {
                     <p>Дата смерти: {new Date(inspection.deathDate).toLocaleString()}</p>
                 )}
             </div>
-            {isModalOpen && (<EditInspectionModal onClose={() => setIsModalOpen(false)} id={id} />)}
+            {isModalOpen && (<EditInspectionModal onClose={() => setIsModalOpen(false)} id={id!} />)}
         </div>
     )
 }
@@ -106,7 +106,7 @@ function CommentList({comments, level = 0, parentId, mutation, editMutation, spe
         <div className="inspection-row-container" style={{ '--level': level } as React.CSSProperties}>
             {level > 0 && <div className="corner"></div>}
             {children.map(comment => {
-                const childCount = comments.filter(c => c.parentId === comment.id).length;
+                const childCount = comments.filter((c: { parentId: any; }) => c.parentId === comment.id).length;
                 return (
                     <>
                         <div className="comment">

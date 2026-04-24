@@ -212,7 +212,7 @@ export function CreateInspectionPage() {
         const consultSpec = getValues("newSpecialityId");
         const consultComment = getValues("newComment");
 
-        if (!consultComment) {return; }
+        if (!consultSpec || !consultComment) {return; }
         const existing = getValues("consultations");
         if(existing.some(c => c.specialityId === consultSpec)) {return;}
 
@@ -333,7 +333,7 @@ export function CreateInspectionPage() {
                         <div className="insp-diseases">
                             <label>Болезни</label>
                             <Select options={icdOptions}
-                                    value={icdOptions?.find(o => o.value === getValues("newIcdDiagnosisId"))}
+                                    value={icdOptions?.find((o: { value: string | undefined; }) => o.value === getValues("newIcdDiagnosisId"))}
                             onChange={(selected) => setValue("newIcdDiagnosisId", selected.value || "")}
                             onInputChange={(input, meta) => { if (meta.action === "input-change") {setSearch(input)}}}
                             />

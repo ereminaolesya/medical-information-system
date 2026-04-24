@@ -86,7 +86,7 @@ export function ReportPage() {
                         <Select
                             isMulti
                             options={icdOptions}
-                            value={icdOptions?.filter(o => selectedIcd?.includes(o.value))}
+                            value={icdOptions?.filter((o: { value: string; }) => selectedIcd?.includes(o.value))}
                             isLoading={isLoading}
                             onChange={(selected) => setValue("icdRoots", selected ? selected.map((s: any) => s.value) : [])}
                             className="basic-multi-select"
